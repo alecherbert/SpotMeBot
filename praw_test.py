@@ -28,9 +28,9 @@ def main():
             if s.media and s.media['oembed'] and s.media['oembed']['title']:
                 media_title = s.media['oembed']['title']
                 submission_title = s.title
-                print("+\t",submission_title)
+                # print("+\t",submission_title)
                 if '-' in media_title and '-' in submission_title:
-                    results,via = parseInfo(media_title,submission_title)
+                    results,via = getSpotifyURL(media_title,submission_title)
                     if results:
                         reply_text = "[Spotify Link]("+results+")\nfound via "+str(via)
                         s.reply(reply_text)
@@ -40,12 +40,12 @@ def main():
                 print("== didnt make the cut ==")
 
 
-def parseInfo(media_title,submission_title):
-    print("Original:\t",media_title)
-    media_artist,media_song = simpleParse(media_title)
-    submission_artist,submission_song = simpleParse(submission_title)
-    print("Media:\t\t",media_artist,"-",media_song)
-    print("Post:\t\t",submission_artist,"-",submission_song)
+def getSpotifyURL(media_title,submission_title):
+    # print("Original:\t",media_title)
+    media_artist,media_song = parseTitle(media_title)
+    submission_artist,submission_song = parseTitle(submission_title)
+    # print("Media:\t\t",media_artist,"-",media_song)
+    # print("Post:\t\t",submission_artist,"-",submission_song)
 
     a,s,url = findByTitle(submission_artist,submission_song)
     if url:
@@ -78,7 +78,7 @@ def findByTitle(in_artist,in_song):
         # print("----")
         ratio = SequenceMatcher(None, in_artist, artist).ratio()
         if ratio > 0.7:
-            print("[FOUND]\t",artist,"-",song['name'],"(",ratio,")")
+            # print("[FOUND]\t",artist,"-",song['name'],"(",ratio,")")
             return artist,song,url
     return None,None,None
     # pp.pprint(song_results)
@@ -120,7 +120,7 @@ def findByArtist(in_artist,in_song):
     else:
         return None,None,None
 
-def simpleParse(title):
+def parseTitle(title):
     splitted = title.split('-')
     artist_name = splitted[0]
     song_name = splitted[1]
