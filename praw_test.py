@@ -7,8 +7,8 @@ from difflib import SequenceMatcher
 spot = spotipy.Spotify()
 
 def main():
-    fp = open("required_spotbot","r")
-    info = fp.read().split()
+    fp = open("required_spotbot.txt","r")
+    info = fp.read().split("\n")
     fp.close()
     user_agent = info[0]
     client_id = info[1]
