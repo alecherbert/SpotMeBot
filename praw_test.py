@@ -1,6 +1,4 @@
 import praw
-import math
-import time
 import re
 import pprint as pp
 import spotipy
@@ -43,7 +41,6 @@ def main():
 
 
 def parseInfo(media_title,submission_title):
-    # fp = open("output_file","a")
     print("Original:\t",media_title)
     media_artist,media_song = simpleParse(media_title)
     submission_artist,submission_song = simpleParse(submission_title)
@@ -52,9 +49,6 @@ def parseInfo(media_title,submission_title):
 
     a,s,url = findByTitle(submission_artist,submission_song)
     if url:
-        # fp.write("[found]\n")
-        # fp.write(url)
-        # fp.write("\n")
         return url,1
     # print("\tcheck media title")
     media_best_match,media_ratio,media_best_url = findByArtist(media_artist,media_song)
@@ -67,29 +61,14 @@ def parseInfo(media_title,submission_title):
         close_match_ratio = SequenceMatcher(None, media_best_match, submission_best_match).ratio()
         if close_match_ratio >= 0.85 and (media_ratio+submission_ratio) >= 1.5:
             print(media_best_match,"(",media_ratio,")","\t==\t",submission_best_match,"(",submission_ratio,")")
-            # fp.write(media_best_url)
-            # fp.write("\n")
-            # fp.write(submission_best_url)
-            # fp.write("\n")
-            # fp.write(" ---------\n")
-            # fp.close()
             return media_best_url,2
         else:
             print(media_best_match,"(",media_ratio,")","\t=/=\t",submission_best_match,"(",submission_ratio,")")
-            # fp.write(" ---------\n")
-            # fp.close()
             return False,0
-    else:
-        # fp.write("- nothing found -\n")
-        # fp.write(" ---------\n")
-        # fp.close()
     return False,0
 
 def findByTitle(in_artist,in_song):
     song_results = spot.search(q=in_song, type='track',limit=50)
-    # fp = open("praw_testing","w")
-    # fp.write(str(song_results['tracks']['items']))
-    # fp.close()
     for song in song_results['tracks']['items']:
         artist = song['artists'][0]['name'].lower()
         # pp.pprint(song)
@@ -111,7 +90,7 @@ def findByArtist(in_artist,in_song):
     artist_uri = None
     if artist_results['artists']['items']:
         artist_uri = artist_results['artists']['items'][0]['uri'] 
-    #TODO checkfor top 4 artists (if needed)
+    #TODO check top 4 artists (if needed)
 
     if not artist_uri:
         return None,None,None
@@ -136,21 +115,10 @@ def findByArtist(in_artist,in_song):
             best_ratio = ratio
             best_index = index
     if best_index != -1:
-        # pp.pprint(tracks[best_index])
-        # fp = open("praw_testing_URIs","a")
-        # fp.write(str(tracks[best_index]))
-        # fp.write("\n\n")
-        # fp.close()
-            # try:
-            #     print(in_song,"=?=",song,'~',ratio)
-            # except UnicodeEncodeError:
-            #     print("Unicode error")
         best_url = tracks[best_index]['external_urls']['spotify']
+        return track_names[best_index],best_ratio,best_url
     else:
         return None,None,None
-    # print(" --+++--")
-
-    return track_names[best_index],best_ratio,best_url
 
 def simpleParse(title):
     splitted = title.split('-')
