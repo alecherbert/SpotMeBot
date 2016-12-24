@@ -3,8 +3,8 @@ import praw
 
 
 def main():
-    fp = open("required_copyposts","r")
-    info = fp.read().split()
+    fp = open("required_copyposts.txt","r")
+    info = fp.read().split("\n")
     fp.close()
     user_agent = info[0]
     client_id = info[1]
