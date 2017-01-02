@@ -1,18 +1,15 @@
 import praw
-from requests.exceptions import ConnectionError, HTTPError, Timeout
+from requests.exceptions import ConnectionError, HTTPError
 
 def handle(f):
     def wrapped(*args, **kwargs):
         try:
             return f(*args, **kwargs)
-        except praw.errors.APIException:
+        except praw.exceptions.APIException:
             print("### praw failure")
             return None
         except ConnectionError:
-            print("### ConnectionError")
-        except (Timeout, socket.timeout, socket.error):
-            print("### timeout")
-            return None
+            print("### praw failure")
         except HTTPError:
             print("### HTTPError")
             return None
