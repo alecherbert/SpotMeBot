@@ -10,7 +10,7 @@ spot = spotipy.Spotify()
 def main():
     domains = ['youtube.com','m.youtube.com','youtu.be']
     r = getPRAW()
-    r_spotmebot = getSubreddit('spotmebot')
+    r_spotmebot = getSubreddit(r,'spotmebot')
     for i,s in enumerate(r_spotmebot.stream.submissions()):
 
         if s.domain in domains:
