@@ -8,11 +8,9 @@ from handle import handle
 spot = spotipy.Spotify()
 
 def main():
-    fp = open("required_spotbot.txt","r")
-    praw_info = fp.read().split("\n")
-    fp.close()
     domains = ['youtube.com','m.youtube.com','youtu.be']
-    r,r_spotmebot = getPRAWandSubreddit(info=praw_info,subreddit='spotmebot')
+    r = getPRAW()
+    r_spotmebot = getSubreddit('spotmebot')
     for i,s in enumerate(r_spotmebot.stream.submissions()):
 
         if s.domain in domains:
@@ -41,14 +39,21 @@ def postComment(submission,results, via):
     submission.reply(reply_text)
 
 @handle
-def getPRAWandSubreddit(info,subreddit):
-    r = praw.Reddit(client_id=info[1],
-                    client_secret=info[2],
-                    user_agent=info[0],
-                    username=info[4],
-                    password=info[3])
-    subreddit = r.subreddit(subreddit)
-    return r,subreddit
+def getPRAW():
+    fp = open("required_spotbot.txt","r")
+    praw_info = fp.read().split("\n")
+    fp.close()
+    r = praw.Reddit(client_id=praw_info[1],
+                    client_secret=praw_info[2],
+                    user_agent=praw_info[0],
+                    username=praw_info[4],
+                    password=praw_info[3])
+    return r
+
+@handle
+def getSubreddit(reddit_instance,subreddit_name):
+    subreddit = reddit_instance.subreddit(subreddit_name)
+    return subreddit
 
 def getSpotifyURL(media_title,submission_title):
     # print("Original:\t",media_title)
