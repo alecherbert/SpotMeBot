@@ -3,28 +3,16 @@ import re
 import pprint as pp
 import spotipy
 from difflib import SequenceMatcher
+from handle import hand;le
 
 spot = spotipy.Spotify()
 
 def main():
     fp = open("required_spotbot.txt","r")
-    info = fp.read().split("\n")
+    praw_info = fp.read().split("\n")
     fp.close()
-    user_agent = info[0]
-    client_id = info[1]
-    client_secret = info[2]
-    password = info[3]
-    username = info[4]
     domains = ['youtube.com','m.youtube.com','youtu.be']
-    try:
-        r = praw.Reddit(client_id=client_id,
-                        client_secret=client_secret,
-                        user_agent=user_agent,
-                        username=username,
-                        password=password)
-        r_spotmebot = r.subreddit('spotmebot')
-    except HTTPError as e:
-        print(e)
+    r,r_spotmebot = getPRAWandSubreddit
     for i,s in enumerate(r_spotmebot.stream.submissions()):
 
         if s.domain in domains:
@@ -35,13 +23,35 @@ def main():
                 if '-' in media_title and '-' in submission_title:
                     results,via = getSpotifyURL(media_title,submission_title)
                     if results:
-                        reply_text = "[Spotify Link]("+results+")\nfound via "+str(via)
-                        s.reply(reply_text)
+                        postCommnet(results, via):
                     else:
                         continue
             else:
                 print("== didnt make the cut ==")
+@handle
+def postCommnet(results, via):
+    switch(via)
+        case 1:
+            via_text = "found by title"
+            break
+        case 2:
+            via_text = "found by artist"
+            break
+        default:
+            via_text = "found by other"
+            break
+    reply_text = "[Spotify Link]("+results+")\n\nfound via "+str(via_text)
+    s.reply(reply_text)
 
+@handle
+def getPRAWandSubreddit(praw_info,subreddit):
+    r = praw.Reddit(client_id=praw_info[0],
+                    client_secret=praw_info[1],
+                    user_agent=praw_info[2],
+                    username=praw_info[3],
+                    password=praw_info[4])
+    subreddit = r.subreddit(subreddit)
+    return r,subreddit
 
 def getSpotifyURL(media_title,submission_title):
     # print("Original:\t",media_title)
