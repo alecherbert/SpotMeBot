@@ -3,7 +3,7 @@ import re
 import pprint as pp
 import spotipy
 from difflib import SequenceMatcher
-from handle import hand;le
+from handle import handle
 
 spot = spotipy.Spotify()
 
@@ -12,7 +12,7 @@ def main():
     praw_info = fp.read().split("\n")
     fp.close()
     domains = ['youtube.com','m.youtube.com','youtu.be']
-    r,r_spotmebot = getPRAWandSubreddit
+    r,r_spotmebot = getPRAWandSubreddit(info=praw_info,subreddit='spotmebot')
     for i,s in enumerate(r_spotmebot.stream.submissions()):
 
         if s.domain in domains:
@@ -23,33 +23,30 @@ def main():
                 if '-' in media_title and '-' in submission_title:
                     results,via = getSpotifyURL(media_title,submission_title)
                     if results:
-                        postComment(results, via)
+                        postComment(s,results, via)
                     else:
                         continue
             else:
                 print("== didnt make the cut ==")
 @handle
-def postComment(results, via):
-    switch(via)
-        case 1:
-            via_text = "found by title"
-            break
-        case 2:
-            via_text = "found by artist"
-            break
-        default:
-            via_text = "found by other"
-            break
-    reply_text = "[Spotify Link]("+results+")\n\nfound via "+str(via_text)
-    s.reply(reply_text)
+def postComment(submission,results, via):
+    if via == 1:
+        via_text = "title"
+    elif via == 2:
+        via_text = "artist"
+    else:
+        via_text = "other method"
+        
+    reply_text = "[Spotify Link]("+results+")\n\nfound by "+str(via_text)
+    submission.reply(reply_text)
 
 @handle
-def getPRAWandSubreddit(praw_info,subreddit):
-    r = praw.Reddit(client_id=praw_info[0],
-                    client_secret=praw_info[1],
-                    user_agent=praw_info[2],
-                    username=praw_info[3],
-                    password=praw_info[4])
+def getPRAWandSubreddit(info,subreddit):
+    r = praw.Reddit(client_id=info[1],
+                    client_secret=info[2],
+                    user_agent=info[0],
+                    username=info[4],
+                    password=info[3])
     subreddit = r.subreddit(subreddit)
     return r,subreddit
 
