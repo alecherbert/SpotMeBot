@@ -23,13 +23,13 @@ def main():
                 if '-' in media_title and '-' in submission_title:
                     results,via = getSpotifyURL(media_title,submission_title)
                     if results:
-                        postCommnet(results, via):
+                        postComment(results, via)
                     else:
                         continue
             else:
                 print("== didnt make the cut ==")
 @handle
-def postCommnet(results, via):
+def postComment(results, via):
     switch(via)
         case 1:
             via_text = "found by title"
