@@ -1,7 +1,6 @@
 import praw
 
 
-
 def main():
     fp = open("required_copyposts.txt","r")
     info = fp.read().split("\n")

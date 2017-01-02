@@ -15,13 +15,16 @@ def main():
     client_secret = info[2]
     password = info[3]
     username = info[4]
-    r = praw.Reddit(client_id=client_id,
-                    client_secret=client_secret,
-                    user_agent=user_agent,
-                    username=username,
-                    password=password)
     domains = ['youtube.com','m.youtube.com','youtu.be']
-    r_spotmebot = r.subreddit('spotmebot')
+    try:
+        r = praw.Reddit(client_id=client_id,
+                        client_secret=client_secret,
+                        user_agent=user_agent,
+                        username=username,
+                        password=password)
+        r_spotmebot = r.subreddit('spotmebot')
+    except HTTPError as e:
+        print(e)
     for i,s in enumerate(r_spotmebot.stream.submissions()):
 
         if s.domain in domains:
