@@ -59,6 +59,8 @@ def getSpotifyURL(media_title,submission_title):
     # print("Original:\t",media_title)
     media_artist,media_song = parseTitle(media_title)
     submission_artist,submission_song = parseTitle(submission_title)
+    if not media_artist or not media_song or not submission_artist,submission_song:
+        return None
     # print("Media:\t\t",media_artist,"-",media_song)
     # print("Post:\t\t",submission_artist,"-",submission_song)
 
@@ -143,7 +145,14 @@ def parseTitle(title):
     artist_name = re.sub(r'[\"\'"]','',artist_name)
     song_name = re.sub(r'([\(\{\[]).*([\)\}\]])*','',song_name)
     song_name = re.sub(r'[\"\'"]','',song_name)
-    return artist_name.strip().lower(),song_name.strip().lower()
+   
+    artist_name = artist_name.strip().lower()
+    song_name = song_name.strip().lower()
+
+    if artist_name.length == 0 or song_name.length == 0:
+        return None,None
+    else:
+        return artist_name,song_name
 
 
 if __name__ == '__main__':
